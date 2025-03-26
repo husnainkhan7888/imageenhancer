@@ -10,7 +10,15 @@
     <div class="container">
         <h1>Image Enhancer Tool</h1>
         <input type="file" id="imageInput" accept="image/*" required>
-        <button id="enhanceButton">Enhance Image</button>
+        <div>
+            <label>Brightness:</label>
+            <input type="range" id="brightnessSlider" min="-100" max="100" value="0">
+        </div>
+        <div>
+            <label>Contrast:</label>
+            <input type="range" id="contrastSlider" min="-100" max="100" value="0">
+        </div>
+        <button id="enhanceButton">Enhance Colors</button>
         <canvas id="canvas" style="display:none;"></canvas>
         <div id="result"></div>
     </div>
