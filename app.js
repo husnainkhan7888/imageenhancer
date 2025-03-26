@@ -1,9 +1,3 @@
-document.getElementById('enhanceButton').addEventListener('click', enhanceColors);
-
-// Track slider values
-const brightnessSlider = document.getElementById('brightnessSlider');
-const contrastSlider = document.getElementById('contrastSlider');
-
 function enhanceColors() {
     const input = document.getElementById('imageInput');
     const canvas = document.getElementById('canvas');
@@ -27,20 +21,49 @@ function enhanceColors() {
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
         const data = imageData.data;
 
-        // Apply brightness and contrast adjustments
-        const brightness = parseInt(brightnessSlider.value);
-        const contrast = parseInt(contrastSlider.value);
-
+        // Enhance colors by increasing saturation
         for (let i = 0; i < data.length; i += 4) {
-            // Brightness adjustment
-            data[i] += brightness;     // Red
-            data[i + 1] += brightness; // Green
-            data[i + 2] += brightness; // Blue
+            const r = data[i];
+            const g = data[i + 1];
+            const b = data[i + 2];
 
-            // Contrast adjustment
-            data[i] = ((data[i] - 128) * (contrast / 100 + 1)) + 128;     // Red
-            data[i + 1] = ((data[i + 1] - 128) * (contrast / 100 + 1)) + 128; // Green
-            data[i + 2] = ((data[i + 2] - 128) * (contrast / 100 + 1)) + 128; // Blue
+            // Convert RGB to HSL
+            const max = Math.max(r, g, b);
+            const min = Math.min(r, g, b);
+            let h, s, l = (max + min) / 2;
+
+            if (max === min) {
+                h = s = 0; // Achromatic (gray)
+            } else {
+                const d = max - min;
+                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                switch (max) {
+                    case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                    case g: h = (b - r) / d + 2; break;
+                    case b: h = (r - g) / d + 4; break;
+                }
+                h /= 6;
+            }
+
+            // Increase saturation
+            s = Math.min(s * 1.5, 1);
+
+            // Convert HSL back to RGB
+            const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+            const p = 2 * l - q;
+            data[i] = hueToRgb(p, q, h + 1 / 3) * 255;     // Red
+            data[i + 1] = hueToRgb(p, q, h) * 255;         // Green
+            data[i + 2] = hueToRgb(p, q, h - 1 / 3) * 255; // Blue
+        }
+
+        // Helper function for HSL to RGB conversion
+        function hueToRgb(p, q, t) {
+            if (t < 0) t += 1;
+            if (t > 1) t -= 1;
+            if (t < 1 / 6) return p + (q - p) * 6 * t;
+            if (t < 1 / 2) return q;
+            if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+            return p;
         }
 
         // Put the modified image data back onto the canvas
