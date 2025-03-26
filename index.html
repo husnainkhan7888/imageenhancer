@@ -3,25 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Enhancer</title>
+    <title>Professional Image Editor</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Image Enhancer Tool</h1>
-        <input type="file" id="imageInput" accept="image/*" required>
-        <div>
+    <div class="editor-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <h2>Tools</h2>
+            <button id="uploadBtn">Upload Image</button>
+            <input type="file" id="imageInput" accept="image/*" style="display:none;">
+            <button id="cropBtn">Crop</button>
+            <button id="rotateBtn">Rotate</button>
+            <button id="resizeBtn">Resize</button>
             <label>Brightness:</label>
             <input type="range" id="brightnessSlider" min="-100" max="100" value="0">
-        </div>
-        <div>
             <label>Contrast:</label>
             <input type="range" id="contrastSlider" min="-100" max="100" value="0">
+            <button id="sepiaBtn">Sepia</button>
+            <button id="grayscaleBtn">Grayscale</button>
+            <button id="addTextBtn">Add Text</button>
+            <button id="saveBtn">Save Image</button>
         </div>
-        <button id="enhanceButton">Enhance Colors</button>
-        <canvas id="canvas" style="display:none;"></canvas>
-        <div id="result"></div>
+
+        <!-- Canvas Area -->
+        <div class="canvas-area">
+            <canvas id="canvas"></canvas>
+        </div>
     </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.2.4/fabric.min.js"></script>
     <script src="app.js"></script>
 </body>
 </html>
