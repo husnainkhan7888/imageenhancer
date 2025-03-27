@@ -1,143 +1,65 @@
-/* Reset & Global Styles */
+/* Reset and global styling */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f4f7f9;
-  color: #333;
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
+  font-family: Arial, sans-serif;
+  background: #f4f4f4;
+  line-height: 1.6;
 }
-
-/* HEADER */
 header {
-  background-color: #2c3e50;
-  color: #ecf0f1;
-  padding: 15px 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-}
-header .logo {
-  position: absolute;
-  left: 20px;
-  top: 50%;
-  transform: translateY(-50%);
-}
-header .logo img {
-  width: 45px;
-  height: auto;
-}
-header h1 {
-  font-size: 1.8rem;
-}
-
-/* TOOLBAR */
-.toolbar {
-  background: #34495e;
-  padding: 10px 15px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  justify-content: center;
-}
-.toolbar input[type="file"] {
-  display: none;
-}
-.toolbar label[for="upload"] {
-  background: #16a085;
+  background: #333;
   color: #fff;
-  padding: 8px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background 0.3s ease;
+  padding: 1em 0;
+  text-align: center;
 }
-.toolbar label[for="upload"]:hover {
-  background: #138d75;
+header nav ul {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+}
+header nav ul li {
+  margin: 0 1em;
+}
+header nav ul li a {
+  color: #fff;
+  text-decoration: none;
+}
+main {
+  padding: 2em;
+}
+section {
+  background: #fff;
+  margin-bottom: 2em;
+  padding: 1em;
+  border-radius: 5px;
+}
+.toolbar {
+  margin-top: 1em;
 }
 .toolbar button {
-  background: #2980b9;
-  color: #fff;
-  padding: 8px 12px;
+  margin-right: 1em;
+  padding: 0.5em 1em;
   border: none;
-  border-radius: 4px;
+  background: #333;
+  color: #fff;
+  border-radius: 3px;
   cursor: pointer;
-  transition: background 0.3s ease;
 }
 .toolbar button:hover {
-  background: #1f6390;
+  background: #555;
 }
-
-/* EDITOR CONTAINER */
-.editor-container {
-  flex: 1;
-  padding: 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+footer {
+  background: #333;
+  color: #fff;
+  text-align: center;
+  padding: 1em;
 }
 canvas {
   border: 1px solid #ccc;
+  display: block;
+  margin: 1em 0;
   max-width: 100%;
-  background: #fff;
-}
-
-/* FOOTER */
-footer {
-  background-color: #2c3e50;
-  color: #ecf0f1;
-  text-align: center;
-  padding: 12px;
-  font-size: 0.9rem;
-}
-
-/* Modal for Resize (if needed) */
-.modal {
-  display: none; 
-  position: fixed; 
-  z-index: 1000; 
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.5);
-}
-.modal-content {
-  background: #fff;
-  width: 300px;
-  margin: 15% auto;
-  padding: 20px;
-  border-radius: 6px;
-  text-align: center;
-  position: relative;
-}
-.modal-content .close {
-  position: absolute;
-  top: 10px;
-  right: 15px;
-  font-size: 1.2rem;
-  cursor: pointer;
-}
-.modal-content input {
-  width: 80%;
-  padding: 8px;
-  margin: 10px 0;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-.modal-content button {
-  background: #16a085;
-  color: #fff;
-  padding: 8px 12px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-.modal-content button:hover {
-  background: #138d75;
 }
