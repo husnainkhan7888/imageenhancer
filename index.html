@@ -1,57 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>hkediting - Video and Image Editing</title>
-  <link rel="stylesheet" href="styles.css">
-  <!-- Fabric.js for image editing -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.6.0/fabric.min.js"></script>
-  <!-- FFmpeg.wasm for video editing -->
-  <script src="https://unpkg.com/@ffmpeg/ffmpeg@0.10.2/dist/ffmpeg.min.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>hkediting - Home</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <header>
     <h1>hkediting</h1>
-    <nav>
-      <ul>
-        <li><a href="#image-editor">Image Editor</a></li>
-        <li><a href="#video-editor">Video Editor</a></li>
-      </ul>
-    </nav>
   </header>
-  
-  <main>
-    <!-- Image Editor Section -->
-    <section id="image-editor">
-      <h2>Image Editor</h2>
-      <input type="file" id="imageUpload" accept="image/*">
-      <canvas id="imageCanvas"></canvas>
-      <div class="toolbar">
-        <button onclick="applyFilter('grayscale')">Grayscale</button>
-        <button onclick="applyFilter('invert')">Invert</button>
-        <button onclick="resetImage()">Reset</button>
-        <!-- Additional image editing tools can be added here -->
-      </div>
-    </section>
-    
-    <!-- Video Editor Section -->
-    <section id="video-editor">
-      <h2>Video Editor</h2>
-      <input type="file" id="videoUpload" accept="video/*">
-      <video id="videoPlayer" controls></video>
-      <div class="toolbar">
-        <button onclick="trimVideo()">Trim Video</button>
-        <button onclick="extractFrame()">Extract Frame</button>
-        <!-- Additional video editing tools can be added here -->
-      </div>
-    </section>
+
+  <main class="landing-container">
+    <h2>Welcome to hkediting</h2>
+    <p>Your one-stop solution for advanced image and video editing, all in your browser.</p>
+    <div class="landing-buttons">
+      <a href="image-editor.html" class="btn">Go to Image Editor</a>
+      <a href="video-editor.html" class="btn">Go to Video Editor</a>
+    </div>
   </main>
-  
+
   <footer>
     <p>&copy; 2025 hkediting. All rights reserved.</p>
   </footer>
-  
-  <script src="script.js"></script>
 </body>
 </html>
