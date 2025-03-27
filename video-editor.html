@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>hkediting - Video Editor</title>
+  <link rel="stylesheet" href="styles.css" />
+  <!-- FFmpeg.wasm -->
+  <script src="https://unpkg.com/@ffmpeg/ffmpeg@0.10.2/dist/ffmpeg.min.js"></script>
+</head>
+<body>
+  <header>
+    <h1>hkediting - Video Editor</h1>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="image-editor.html">Image Editor</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="editor-section">
+      <h2>Video Editor</h2>
+      <div class="upload-section">
+        <label for="videoUpload">Choose Video:</label>
+        <input type="file" id="videoUpload" accept="video/*" />
+      </div>
+      <video id="videoPlayer" controls></video>
+      <div class="toolbar">
+        <button onclick="trimVideo()">Trim Video</button>
+        <button onclick="extractFrame()">Extract Frame</button>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 hkediting. All rights reserved.</p>
+  </footer>
+
+  <script src="scripts/videoEditor.js"></script>
+</body>
+</html>
