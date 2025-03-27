@@ -1,164 +1,92 @@
-/* styles.css */
-:root {
-    --primary-color: #2c3e50;
-    --secondary-color: #1abc9c;
-    --bg-color: #f5f5f5;
-    --canvas-width: 800px;
-    --canvas-height: 600px;
+// Crop
+document.getElementById('cropBtn').addEventListener('click', () => {
+    const activeObj = canvas.getActiveObject();
+    if (!activeObj || !(activeObj instanceof fabric.Image)) {
+        alert('Select an image to crop.');
+        return;
+    }
+
+    const rect = new fabric.Rect({
+        left: activeObj.left,
+        top: activeObj.top,
+        width: activeObj.width * 0.5,
+        height: activeObj.height * 0.5,
+        fill: 'transparent',
+        stroke: '#e74c3c',
+        strokeWidth: 2,
+        selectable: true,
+    });
+
+    canvas.add(rect);
+    canvas.setActiveObject(rect);
+    canvas.renderAll();
+
+    setTimeout(() => {
+        const cropRect = canvas.getActiveObject();
+        if (cropRect && cropRect.type === 'rect') {
+            const croppedImg = new fabric.Image(activeObj.getElement(), {
+                left: cropRect.left,
+                top: cropRect.top,
+                width: cropRect.width,
+                height: cropRect.height,
+                clipPath: cropRect,
+            });
+            canvas.remove(activeObj);
+            canvas.remove(cropRect);
+            canvas.add(croppedImg);
+            canvas.renderAll();
+        }
+    }, 100);
+});
+
+// Rotate
+document.getElementById('rotateBtn').addEventListener('click', () => {
+    const activeObj = canvas.getActiveObject();
+    if (!activeObj) {
+        alert('Select an object to rotate.');
+        return;
+    }
+    activeObj.rotate(activeObj.angle + 90);
+    canvas.renderAll();
+});
+
+// Add Text
+document.getElementById('textBtn').addEventListener('click', () => {
+    const text = new fabric.Textbox('Type here...', {
+        left: 50,
+        top: 50,
+        fontSize: 24,
+        fill: '#333',
+        fontFamily: 'Arial',
+        editable: true,
+    });
+    canvas.add(text);
+    canvas.setActiveObject(text);
+    canvas.renderAll();
+});
+
+// Undo/Redo
+let undoStack = [];
+let redoStack = [];
+
+canvas.on('object:added', () => saveState());
+
+function saveState() {
+    undoStack.push(JSON.stringify(canvas));
+    redoStack = [];
 }
 
-body {
-    margin: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: var(--bg-color);
-}
+document.getElementById('undoBtn').addEventListener('click', () => {
+    if (undoStack.length > 1) {
+        redoStack.push(undoStack.pop());
+        canvas.loadFromJSON(undoStack[undoStack.length - 1], () => canvas.renderAll());
+    }
+});
 
-/* Header */
-.header {
-    background-color: var(--primary-color);
-    color: white;
-    padding: 15px 30px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.header .logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.header .logo img {
-    border-radius: 5px;
-}
-
-.header .actions .btn {
-    background-color: var(--secondary-color);
-    color: white;
-    border: none;
-    padding: 8px 15px;
-    margin-left: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-/* Editor Container */
-.editor-container {
-    display: grid;
-    grid-template-columns: 60px 1fr 250px;
-    grid-template-rows: 1fr;
-    height: calc(100vh - 60px - 30px); /* Subtract header and status bar */
-    gap: 10px;
-    padding: 10px;
-}
-
-.toolbar {
-    grid-column: 1 / 2;
-    background-color: white;
-    border-radius: 8px;
-    padding: 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.tool-group {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-
-.tool-btn {
-    background-color: transparent;
-    border: none;
-    padding: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    color: var(--primary-color);
-    transition: background-color 0.3s;
-}
-
-.tool-btn:hover {
-    background-color: #f0f0f0;
-}
-
-.canvas-wrapper {
-    grid-column: 2 / 3;
-    position: relative;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-canvas {
-    width: var(--canvas-width);
-    height: var(--canvas-height);
-    background-color: white;
-    border: 1px solid #ddd;
-}
-
-.zoom-controls {
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
-    display: flex;
-    gap: 5px;
-}
-
-.zoom-controls button {
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.layers-panel {
-    grid-column: 3 / 4;
-    background-color: white;
-    border-radius: 8px;
-    padding: 15px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.layers-panel h3 {
-    color: var(--primary-color);
-    margin-bottom: 10px;
-}
-
-.status-bar {
-    background-color: var(--primary-color);
-    color: white;
-    padding: 10px 30px;
-    display: flex;
-    gap: 20px;
-    font-size: 14px;
-}
-
-/* Tooltips */
-[data-tooltip] {
-    position: relative;
-}
-
-[data-tooltip]::after {
-    content: attr(data-tooltip);
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: var(--primary-color);
-    color: white;
-    padding: 4px 8px;
-    border-radius: 4px;
-    white-space: nowrap;
-    opacity: 0;
-    transition: opacity 0.3s;
-}
-
-[data-tooltip]:hover::after {
-    opacity: 1;
-}
+document.getElementById('redoBtn').addEventListener('click', () => {
+    if (redoStack.length > 0) {
+        const state = redoStack.pop();
+        undoStack.push(state);
+        canvas.loadFromJSON(state, () => canvas.renderAll());
+    }
+});
