@@ -12,7 +12,7 @@
         <h1>HK Tools - Image Editor</h1>
     </header>
     <div class="toolbar">
-        <input type="file" id="upload" accept="image/*">
+        <input type="file" id="upload" accept="image/*" onchange="loadImage(event)">
         <button onclick="cropImage()">Crop</button>
         <button onclick="resizeImage()">Resize</button>
         <button onclick="rotateImage()">Rotate</button>
@@ -27,6 +27,24 @@
     <div class="editor-container">
         <canvas id="canvas"></canvas>
     </div>
-    <script src="script.js"></script>
+    <script>
+        let canvas = document.getElementById('canvas');
+        let ctx = canvas.getContext('2d');
+        let img = new Image();
+
+        function loadImage(event) {
+            let file = event.target.files[0];
+            let reader = new FileReader();
+            reader.onload = function(e) {
+                img.src = e.target.result;
+                img.onload = function() {
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    ctx.drawImage(img, 0, 0, img.width, img.height);
+                }
+            }
+            reader.readAsDataURL(file);
+        }
+    </script>
 </body>
 </html>
