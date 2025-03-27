@@ -3,32 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professional Image Editor</title>
+    <title>HKTools - Professional Image Editor</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">HKTools</div>
+        <div class="version">v1.0</div>
+    </header>
+
+    <!-- Main Container -->
     <div class="editor-container">
         <!-- Sidebar -->
         <div class="sidebar">
-            <h2>Tools</h2>
-            <button id="uploadBtn">Upload Image</button>
-            <input type="file" id="imageInput" accept="image/*" style="display:none;">
-            <button id="cropBtn">Crop</button>
-            <button id="rotateBtn">Rotate</button>
-            <button id="resizeBtn">Resize</button>
-            <label>Brightness:</label>
-            <input type="range" id="brightnessSlider" min="-100" max="100" value="0">
-            <label>Contrast:</label>
-            <input type="range" id="contrastSlider" min="-100" max="100" value="0">
-            <button id="sepiaBtn">Sepia</button>
-            <button id="grayscaleBtn">Grayscale</button>
-            <button id="addTextBtn">Add Text</button>
-            <button id="saveBtn">Save Image</button>
+            <!-- Upload Section -->
+            <div class="tool-section">
+                <button id="uploadBtn" class="tool-btn">
+                    <i class="fas fa-upload"></i> Upload
+                </button>
+                <input type="file" id="imageInput" accept="image/*" style="display:none;">
+            </div>
+
+            <!-- Editing Tools -->
+            <div class="tool-section">
+                <h3>Tools</h3>
+                <button id="cropBtn" class="tool-btn"><i class="fas fa-crop"></i> Crop</button>
+                <button id="rotateBtn" class="tool-btn"><i class="fas fa-redo"></i> Rotate</button>
+                <button id="resizeBtn" class="tool-btn"><i class="fas fa-expand"></i> Resize</button>
+                <button id="addTextBtn" class="tool-btn"><i class="fas fa-font"></i> Text</button>
+                <button id="addShapeBtn" class="tool-btn"><i class="fas fa-shapes"></i> Shape</button>
+            </div>
+
+            <!-- Filters -->
+            <div class="tool-section">
+                <h3>Filters</h3>
+                <button id="grayscaleBtn" class="tool-btn">Grayscale</button>
+                <button id="sepiaBtn" class="tool-btn">Sepia</button>
+                <button id="vintageBtn" class="tool-btn">Vintage</button>
+                <button id="clarendonBtn" class="tool-btn">Clarendon</button>
+            </div>
+
+            <!-- Adjustments -->
+            <div class="tool-section">
+                <h3>Adjustments</h3>
+                <label>Brightness:</label>
+                <input type="range" id="brightnessSlider" min="-100" max="100" value="0">
+                <label>Contrast:</label>
+                <input type="range" id="contrastSlider" min="-100" max="100" value="0">
+                <label>Saturation:</label>
+                <input type="range" id="saturationSlider" min="-100" max="100" value="0">
+            </div>
+
+            <!-- Actions -->
+            <div class="tool-section">
+                <button id="undoBtn" class="tool-btn"><i class="fas fa-undo"></i> Undo</button>
+                <button id="redoBtn" class="tool-btn"><i class="fas fa-redo"></i> Redo</button>
+                <button id="saveBtn" class="tool-btn"><i class="fas fa-save"></i> Save</button>
+            </div>
         </div>
 
         <!-- Canvas Area -->
         <div class="canvas-area">
             <canvas id="canvas"></canvas>
+            <div class="zoom-controls">
+                <button id="zoomInBtn"><i class="fas fa-search-plus"></i></button>
+                <button id="zoomOutBtn"><i class="fas fa-search-minus"></i></button>
+            </div>
+        </div>
+
+        <!-- Layers Panel -->
+        <div class="layers-panel">
+            <h3>Layers</h3>
+            <div id="layersList"></div>
         </div>
     </div>
 
