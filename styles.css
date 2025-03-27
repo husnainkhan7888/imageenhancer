@@ -8,6 +8,7 @@ body {
   font-family: Arial, sans-serif;
   background: #f4f4f4;
   line-height: 1.6;
+  color: #333;
 }
 header {
   background: #333;
@@ -15,10 +16,14 @@ header {
   padding: 1em 0;
   text-align: center;
 }
+header h1 {
+  margin-bottom: 0.5em;
+}
 header nav ul {
   list-style: none;
   display: flex;
   justify-content: center;
+  padding: 0;
 }
 header nav ul li {
   margin: 0 1em;
@@ -30,16 +35,37 @@ header nav ul li a {
 main {
   padding: 2em;
 }
-section {
+footer {
+  background: #333;
+  color: #fff;
+  text-align: center;
+  padding: 1em;
+}
+.editor-section {
   background: #fff;
-  margin-bottom: 2em;
   padding: 1em;
   border-radius: 5px;
+  margin-bottom: 2em;
+}
+.editor-section h2 {
+  margin-bottom: 1em;
+}
+.upload-section {
+  margin-bottom: 1em;
+}
+.canvas-container {
+  margin: 1em 0;
+  position: relative;
+}
+#imageCanvas {
+  border: 1px solid #ccc;
+  max-width: 100%;
 }
 .toolbar {
   margin-top: 1em;
 }
-.toolbar button {
+.toolbar button,
+.landing-buttons .btn {
   margin-right: 1em;
   padding: 0.5em 1em;
   border: none;
@@ -48,18 +74,24 @@ section {
   border-radius: 3px;
   cursor: pointer;
 }
-.toolbar button:hover {
+.toolbar button:hover,
+.landing-buttons .btn:hover {
   background: #555;
 }
-footer {
-  background: #333;
-  color: #fff;
+.landing-container {
   text-align: center;
-  padding: 1em;
+  margin-top: 3em;
 }
-canvas {
-  border: 1px solid #ccc;
+.landing-buttons {
+  margin-top: 2em;
+}
+.landing-buttons .btn {
+  text-decoration: none;
+  margin: 0 0.5em;
+}
+video {
   display: block;
   margin: 1em 0;
-  max-width: 100%;
+  width: 100%;
+  max-width: 600px;
 }
