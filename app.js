@@ -1,10 +1,11 @@
 // Initialize Fabric.js canvas
-const canvas = new fabric.Canvas('canvas', { 
-    backgroundColor: '#fff',
-    selection: true,
+const canvas = new fabric.Canvas('canvas', {
+    backgroundColor: '#ffffff',
+    preserveObjectStacking: true,
 });
 
-let activeObject = null;
+let undoStack = [];
+let redoStack = [];
 
 // Upload Image
 document.getElementById('uploadBtn').addEventListener('click', () => {
@@ -23,12 +24,35 @@ document.getElementById('imageInput').addEventListener('change', (e) => {
             canvas.add(img);
             canvas.centerObject(img);
             canvas.renderAll();
+            saveState();
         });
     };
     reader.readAsDataURL(file);
 });
 
-// Crop
+// Undo/Redo
+document.getElementById('undoBtn').addEventListener('click', () => {
+    if (undoStack.length > 0) {
+        const state = undoStack.pop();
+        redoStack.push(state);
+        canvas.loadFromJSON(state, () => canvas.renderAll());
+    }
+});
+
+document.getElementById('redoBtn').addEventListener('click', () => {
+    if (redoStack.length > 0) {
+        const state = redoStack.pop();
+        undoStack.push(state);
+        canvas.loadFromJSON(state, () => canvas.renderAll());
+    }
+});
+
+function saveState() {
+    undoStack.push(JSON.stringify(canvas));
+    redoStack = [];
+}
+
+// Crop (Improved)
 document.getElementById('cropBtn').addEventListener('click', () => {
     const activeObj = canvas.getActiveObject();
     if (!activeObj || !(activeObj instanceof fabric.Image)) {
@@ -42,7 +66,7 @@ document.getElementById('cropBtn').addEventListener('click', () => {
         width: activeObj.width * 0.5,
         height: activeObj.height * 0.5,
         fill: 'transparent',
-        stroke: 'red',
+        stroke: '#e74c3c',
         strokeWidth: 2,
         selectable: true,
     });
@@ -51,7 +75,6 @@ document.getElementById('cropBtn').addEventListener('click', () => {
     canvas.setActiveObject(rect);
     canvas.renderAll();
 
-    // Actual crop logic
     setTimeout(() => {
         const cropRect = canvas.getActiveObject();
         if (cropRect && cropRect.type === 'rect') {
@@ -66,42 +89,50 @@ document.getElementById('cropBtn').addEventListener('click', () => {
             canvas.remove(cropRect);
             canvas.add(croppedImg);
             canvas.renderAll();
+            saveState();
         }
     }, 100);
 });
 
-// Rotate
-document.getElementById('rotateBtn').addEventListener('click', () => {
+// Filters
+document.getElementById('grayscaleBtn').addEventListener('click', () => applyFilter('Grayscale'));
+document.getElementById('sepiaBtn').addEventListener('click', () => applyFilter('Sepia'));
+document.getElementById('vintageBtn').addEventListener('click', () => applyFilter('Vintage'));
+document.getElementById('clarendonBtn').addEventListener('click', () => applyFilter('Clarendon'));
+
+function applyFilter(filterName) {
     const activeObj = canvas.getActiveObject();
-    if (!activeObj) {
-        alert('Select an object to rotate.');
+    if (!activeObj || !(activeObj instanceof fabric.Image)) {
+        alert('Select an image to apply the filter.');
         return;
     }
-    activeObj.rotate(activeObj.angle + 90);
-    canvas.renderAll();
-});
 
-// Resize
-document.getElementById('resizeBtn').addEventListener('click', () => {
-    const activeObj = canvas.getActiveObject();
-    if (!activeObj) {
-        alert('Select an object to resize.');
-        return;
+    activeObj.filters = [];
+    switch (filterName) {
+        case 'Grayscale':
+            activeObj.filters.push(new fabric.Image.filters.Grayscale());
+            break;
+        case 'Sepia':
+            activeObj.filters.push(new fabric.Image.filters.Sepia());
+            break;
+        case 'Vintage':
+            activeObj.filters.push(new fabric.Image.filters.Vintage());
+            break;
+        case 'Clarendon':
+            activeObj.filters.push(new fabric.Image.filters.Clarendon());
+            break;
     }
-    activeObj.scale(1.2);
+    activeObj.applyFilters();
     canvas.renderAll();
-});
+    saveState();
+}
 
-// Brightness/Contrast
-document.getElementById('brightnessSlider').addEventListener('input', (e) => {
-    applyFilter('brightness', parseInt(e.target.value));
-});
+// Adjustments
+document.getElementById('brightnessSlider').addEventListener('input', (e) => applyAdjustment('brightness', e.target.value));
+document.getElementById('contrastSlider').addEventListener('input', (e) => applyAdjustment('contrast', e.target.value));
+document.getElementById('saturationSlider').addEventListener('input', (e) => applyAdjustment('saturation', e.target.value));
 
-document.getElementById('contrastSlider').addEventListener('input', (e) => {
-    applyFilter('contrast', parseInt(e.target.value));
-});
-
-function applyFilter(filterType, value) {
+function applyAdjustment(type, value) {
     const activeObj = canvas.getActiveObject();
     if (!activeObj || !(activeObj instanceof fabric.Image)) {
         alert('Select an image to adjust.');
@@ -109,86 +140,79 @@ function applyFilter(filterType, value) {
     }
 
     activeObj.filters = activeObj.filters || [];
-
-    if (filterType === 'brightness') {
-        const brightnessFilter = new fabric.Image.filters.Brightness({ brightness: value / 100 });
-        activeObj.filters.push(brightnessFilter);
-    } else if (filterType === 'contrast') {
-        const contrastFilter = new fabric.Image.filters.Contrast({ contrast: value / 100 });
-        activeObj.filters.push(contrastFilter);
+    switch (type) {
+        case 'brightness':
+            activeObj.filters.push(new fabric.Image.filters.Brightness({ brightness: value / 100 }));
+            break;
+        case 'contrast':
+            activeObj.filters.push(new fabric.Image.filters.Contrast({ contrast: value / 100 }));
+            break;
+        case 'saturation':
+            activeObj.filters.push(new fabric.Image.filters.Saturation({ saturation: value / 100 }));
+            break;
     }
-
     activeObj.applyFilters();
     canvas.renderAll();
+    saveState();
 }
 
-// Sepia Filter
-document.getElementById('sepiaBtn').addEventListener('click', () => {
-    applyFilter('sepia');
-});
-
-// Grayscale Filter
-document.getElementById('grayscaleBtn').addEventListener('click', () => {
-    applyFilter('grayscale');
-});
-
-function applyFilter(filterType) {
-    const activeObj = canvas.getActiveObject();
-    if (!activeObj || !(activeObj instanceof fabric.Image)) {
-        alert('Select an image to apply the filter.');
-        return;
-    }
-
-    activeObj.filters = activeObj.filters || [];
-
-    if (filterType === 'sepia') {
-        activeObj.filters.push(new fabric.Image.filters.Sepia());
-    } else if (filterType === 'grayscale') {
-        activeObj.filters.push(new fabric.Image.filters.Grayscale());
-    }
-
-    activeObj.applyFilters();
-    canvas.renderAll();
-}
-
-// Add Text
+// Text and Shapes
 document.getElementById('addTextBtn').addEventListener('click', () => {
     const text = new fabric.Textbox('Type here...', {
         left: 50,
         top: 50,
         fontSize: 24,
-        fill: 'black',
-        borderColor: '#000',
-        cornerColor: '#000',
-        cornerSize: 10,
-        transparentCorners: false,
+        fill: '#333',
+        fontFamily: 'Arial',
+        editable: true,
     });
     canvas.add(text);
     canvas.setActiveObject(text);
     canvas.renderAll();
+    saveState();
 });
+
+document.getElementById('addShapeBtn').addEventListener('click', () => {
+    const shape = new fabric.Rect({
+        left: 50,
+        top: 50,
+        width: 100,
+        height: 100,
+        fill: '#3498db',
+        stroke: '#2c3e50',
+        strokeWidth: 2,
+        selectable: true,
+    });
+    canvas.add(shape);
+    canvas.renderAll();
+    saveState();
+});
+
+// Zoom/Pan
+document.getElementById('zoomInBtn').addEventListener('click', () => canvas.setZoom(canvas.getZoom() * 1.1));
+document.getElementById('zoomOutBtn').addEventListener('click', () => canvas.setZoom(canvas.getZoom() * 0.9));
 
 // Save Image
 document.getElementById('saveBtn').addEventListener('click', () => {
-    const dataURL = canvas.toDataURL({
-        format: 'jpeg',
-        quality: 0.9,
-    });
+    const dataURL = canvas.toDataURL({ format: 'jpeg', quality: 0.9 });
     const link = document.createElement('a');
     link.href = dataURL;
-    link.download = 'edited-image.jpg';
+    link.download = 'HKTools_Edited_Image.jpg';
     link.click();
 });
-// app.js (add this at the bottom)
-function resizeCanvas() {
-    const canvasElement = document.getElementById('canvas');
-    canvas.setWidth(canvasElement.parentElement.offsetWidth - 40); // Adjust for padding
-    canvas.setHeight(window.innerHeight - 40); // Adjust for padding
-    canvas.renderAll();
+
+// Layers Panel
+function updateLayers() {
+    const layersList = document.getElementById('layersList');
+    layersList.innerHTML = '';
+    canvas.getObjects().forEach((obj, index) => {
+        const layerDiv = document.createElement('div');
+        layerDiv.className = 'layer-item';
+        layerDiv.textContent = `Layer ${index + 1}`;
+        layerDiv.onclick = () => canvas.setActiveObject(obj);
+        layersList.appendChild(layerDiv);
+    });
 }
 
-// Initial resize
-resizeCanvas();
-
-// Resize on window changes
-window.addEventListener('resize', resizeCanvas);
+canvas.on('object:added', updateLayers);
+canvas.on('object:removed', updateLayers);
