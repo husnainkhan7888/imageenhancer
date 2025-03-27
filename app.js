@@ -1,5 +1,8 @@
 // Initialize Fabric.js canvas
-const canvas = new fabric.Canvas('canvas', { backgroundColor: '#fff' });
+const canvas = new fabric.Canvas('canvas', { 
+    backgroundColor: '#fff',
+    selection: true,
+});
 
 let activeObject = null;
 
@@ -16,10 +19,10 @@ document.getElementById('imageInput').addEventListener('change', (e) => {
     reader.onload = (event) => {
         fabric.Image.fromURL(event.target.result, (img) => {
             canvas.clear();
-            img.scaleToWidth(canvas.getWidth() * 0.8); // Scale image to fit canvas
+            img.scaleToWidth(canvas.getWidth() * 0.8);
             canvas.add(img);
-            canvas.centerObject(img); // Center the image
-            canvas.renderAll(); // Render the canvas
+            canvas.centerObject(img);
+            canvas.renderAll();
         });
     };
     reader.readAsDataURL(file);
@@ -27,17 +30,17 @@ document.getElementById('imageInput').addEventListener('change', (e) => {
 
 // Crop
 document.getElementById('cropBtn').addEventListener('click', () => {
-    const activeObject = canvas.getActiveObject();
-    if (!activeObject || !(activeObject instanceof fabric.Image)) {
-        alert('Please select an image to crop.');
+    const activeObj = canvas.getActiveObject();
+    if (!activeObj || !(activeObj instanceof fabric.Image)) {
+        alert('Select an image to crop.');
         return;
     }
 
     const rect = new fabric.Rect({
-        left: activeObject.left,
-        top: activeObject.top,
-        width: activeObject.width * 0.5,
-        height: activeObject.height * 0.5,
+        left: activeObj.left,
+        top: activeObj.top,
+        width: activeObj.width * 0.5,
+        height: activeObj.height * 0.5,
         fill: 'transparent',
         stroke: 'red',
         strokeWidth: 2,
@@ -47,93 +50,116 @@ document.getElementById('cropBtn').addEventListener('click', () => {
     canvas.add(rect);
     canvas.setActiveObject(rect);
     canvas.renderAll();
+
+    // Actual crop logic
+    setTimeout(() => {
+        const cropRect = canvas.getActiveObject();
+        if (cropRect && cropRect.type === 'rect') {
+            const croppedImg = new fabric.Image(activeObj.getElement(), {
+                left: cropRect.left,
+                top: cropRect.top,
+                width: cropRect.width,
+                height: cropRect.height,
+                clipPath: cropRect,
+            });
+            canvas.remove(activeObj);
+            canvas.remove(cropRect);
+            canvas.add(croppedImg);
+            canvas.renderAll();
+        }
+    }, 100);
 });
 
 // Rotate
 document.getElementById('rotateBtn').addEventListener('click', () => {
-    const activeObject = canvas.getActiveObject();
-    if (!activeObject) {
-        alert('Please select an object to rotate.');
+    const activeObj = canvas.getActiveObject();
+    if (!activeObj) {
+        alert('Select an object to rotate.');
         return;
     }
-    activeObject.rotate(activeObject.angle + 90);
+    activeObj.rotate(activeObj.angle + 90);
     canvas.renderAll();
 });
 
 // Resize
 document.getElementById('resizeBtn').addEventListener('click', () => {
-    const activeObject = canvas.getActiveObject();
-    if (!activeObject) {
-        alert('Please select an object to resize.');
+    const activeObj = canvas.getActiveObject();
+    if (!activeObj) {
+        alert('Select an object to resize.');
         return;
     }
-    activeObject.scaleX *= 1.2;
-    activeObject.scaleY *= 1.2;
+    activeObj.scale(1.2);
     canvas.renderAll();
 });
 
-// Brightness and Contrast
+// Brightness/Contrast
 document.getElementById('brightnessSlider').addEventListener('input', (e) => {
-    applyBrightnessContrast(parseInt(e.target.value), parseInt(document.getElementById('contrastSlider').value));
+    applyFilter('brightness', parseInt(e.target.value));
 });
 
 document.getElementById('contrastSlider').addEventListener('input', (e) => {
-    applyBrightnessContrast(parseInt(document.getElementById('brightnessSlider').value), parseInt(e.target.value));
+    applyFilter('contrast', parseInt(e.target.value));
 });
 
-function applyBrightnessContrast(brightness, contrast) {
-    const activeObject = canvas.getActiveObject();
-    if (!activeObject || !(activeObject instanceof fabric.Image)) {
-        alert('Please select an image to adjust brightness/contrast.');
+function applyFilter(filterType, value) {
+    const activeObj = canvas.getActiveObject();
+    if (!activeObj || !(activeObj instanceof fabric.Image)) {
+        alert('Select an image to adjust.');
         return;
     }
 
-    activeObject.filters = [];
-    if (brightness !== 0) {
-        activeObject.filters.push(new fabric.Image.filters.Brightness({ brightness: brightness / 100 }));
+    activeObj.filters = activeObj.filters || [];
+
+    if (filterType === 'brightness') {
+        const brightnessFilter = new fabric.Image.filters.Brightness({ brightness: value / 100 });
+        activeObj.filters.push(brightnessFilter);
+    } else if (filterType === 'contrast') {
+        const contrastFilter = new fabric.Image.filters.Contrast({ contrast: value / 100 });
+        activeObj.filters.push(contrastFilter);
     }
-    if (contrast !== 0) {
-        activeObject.filters.push(new fabric.Image.filters.Contrast({ contrast: contrast / 100 }));
-    }
-    activeObject.applyFilters();
+
+    activeObj.applyFilters();
     canvas.renderAll();
 }
 
 // Sepia Filter
 document.getElementById('sepiaBtn').addEventListener('click', () => {
-    const activeObject = canvas.getActiveObject();
-    if (!activeObject || !(activeObject instanceof fabric.Image)) {
-        alert('Please select an image to apply sepia.');
-        return;
-    }
-
-    activeObject.filters.push(new fabric.Image.filters.Sepia());
-    activeObject.applyFilters();
-    canvas.renderAll();
+    applyFilter('sepia');
 });
 
 // Grayscale Filter
 document.getElementById('grayscaleBtn').addEventListener('click', () => {
-    const activeObject = canvas.getActiveObject();
-    if (!activeObject || !(activeObject instanceof fabric.Image)) {
-        alert('Please select an image to apply grayscale.');
+    applyFilter('grayscale');
+});
+
+function applyFilter(filterType) {
+    const activeObj = canvas.getActiveObject();
+    if (!activeObj || !(activeObj instanceof fabric.Image)) {
+        alert('Select an image to apply the filter.');
         return;
     }
 
-    activeObject.filters.push(new fabric.Image.filters.Grayscale());
-    activeObject.applyFilters();
+    activeObj.filters = activeObj.filters || [];
+
+    if (filterType === 'sepia') {
+        activeObj.filters.push(new fabric.Image.filters.Sepia());
+    } else if (filterType === 'grayscale') {
+        activeObj.filters.push(new fabric.Image.filters.Grayscale());
+    }
+
+    activeObj.applyFilters();
     canvas.renderAll();
-});
+}
 
 // Add Text
 document.getElementById('addTextBtn').addEventListener('click', () => {
-    const text = new fabric.Textbox('Enter text here', {
+    const text = new fabric.Textbox('Type here...', {
         left: 50,
         top: 50,
-        fontSize: 30,
+        fontSize: 24,
         fill: 'black',
-        borderColor: 'red',
-        cornerColor: 'green',
+        borderColor: '#000',
+        cornerColor: '#000',
         cornerSize: 10,
         transparentCorners: false,
     });
@@ -144,9 +170,12 @@ document.getElementById('addTextBtn').addEventListener('click', () => {
 
 // Save Image
 document.getElementById('saveBtn').addEventListener('click', () => {
-    const dataURL = canvas.toDataURL({ format: 'jpeg', quality: 0.8 });
+    const dataURL = canvas.toDataURL({
+        format: 'jpeg',
+        quality: 0.9,
+    });
     const link = document.createElement('a');
     link.href = dataURL;
-    link.download = 'edited-image.jpeg';
+    link.download = 'edited-image.jpg';
     link.click();
 });
