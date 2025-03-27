@@ -1,4 +1,4 @@
-/* Reset and global styles */
+/* Reset & Global Styles */
 * {
   margin: 0;
   padding: 0;
@@ -11,7 +11,7 @@ body {
   min-height: 100vh;
 }
 
-/* Header and Toolbar */
+/* Header & Toolbar */
 header {
   background: #24292e;
   color: #fff;
@@ -34,6 +34,7 @@ header {
 .toolbar {
   display: flex;
   gap: 10px;
+  flex-wrap: wrap;
 }
 .toolbar button {
   background: #0366d6;
@@ -49,7 +50,7 @@ header {
   background: #0255b4;
 }
 
-/* Dropdown for Filters */
+/* Dropdown Menu for Filters */
 .dropdown {
   position: relative;
   display: inline-block;
@@ -62,6 +63,7 @@ header {
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
   z-index: 1;
   border-radius: 4px;
+  margin-top: 5px;
 }
 .dropdown-content button {
   background: #fff;
@@ -82,7 +84,7 @@ header {
 /* Main Editor Area */
 .editor-container {
   margin: 20px auto;
-  width: 90%;
+  width: 95%;
   max-width: 1000px;
   background: #fff;
   padding: 15px;
@@ -93,6 +95,7 @@ header {
 canvas {
   max-width: 100%;
   border: 1px solid #ccc;
+  cursor: default;
 }
 
 /* Footer */
@@ -106,7 +109,7 @@ footer {
   width: 100%;
 }
 
-/* Modal styles for resizing */
+/* Modal Styles for Resize */
 .modal {
   display: none;
   position: fixed;
@@ -115,7 +118,6 @@ footer {
   top: 0;
   width: 100%;
   height: 100%;
-  overflow: auto;
   background: rgba(0,0,0,0.5);
 }
 .modal-content {
@@ -127,10 +129,22 @@ footer {
   text-align: center;
   position: relative;
 }
-.modal-content input {
-  width: 80%;
-  padding: 6px;
+.modal-content h3 {
+  margin-bottom: 15px;
+}
+.modal-field {
   margin: 10px 0;
+  text-align: left;
+}
+.modal-field label {
+  display: block;
+  margin-bottom: 5px;
+}
+.modal-field input {
+  width: 100%;
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 .modal-content button {
   background: #0366d6;
@@ -139,6 +153,7 @@ footer {
   padding: 8px 12px;
   border-radius: 4px;
   cursor: pointer;
+  margin-top: 10px;
 }
 .modal-content .close {
   position: absolute;
