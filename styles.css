@@ -1,13 +1,21 @@
 /* styles.css */
+:root {
+    --primary-color: #2c3e50;
+    --secondary-color: #1abc9c;
+    --bg-color: #f5f5f5;
+    --canvas-width: 800px;
+    --canvas-height: 600px;
+}
+
 body {
     margin: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f5f5f5;
+    background-color: var(--bg-color);
 }
 
 /* Header */
 .header {
-    background-color: #2c3e50;
+    background-color: var(--primary-color);
     color: white;
     padding: 15px 30px;
     display: flex;
@@ -16,98 +24,141 @@ body {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.logo {
-    font-size: 24px;
-    font-weight: bold;
+.header .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
-.version {
-    font-size: 14px;
-    color: #95a5a6;
+.header .logo img {
+    border-radius: 5px;
+}
+
+.header .actions .btn {
+    background-color: var(--secondary-color);
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    margin-left: 10px;
+    border-radius: 5px;
+    cursor: pointer;
 }
 
 /* Editor Container */
 .editor-container {
+    display: grid;
+    grid-template-columns: 60px 1fr 250px;
+    grid-template-rows: 1fr;
+    height: calc(100vh - 60px - 30px); /* Subtract header and status bar */
+    gap: 10px;
+    padding: 10px;
+}
+
+.toolbar {
+    grid-column: 1 / 2;
+    background-color: white;
+    border-radius: 8px;
+    padding: 10px;
     display: flex;
-    height: calc(100vh - 60px);
+    flex-direction: column;
+    gap: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.sidebar {
-    width: 280px;
-    background-color: #34495e;
-    color: white;
-    padding: 20px;
-    overflow-y: auto;
-}
-
-.tool-section {
-    margin-bottom: 20px;
-}
-
-.tool-section h3 {
-    color: #bdc3c7;
-    margin-bottom: 10px;
+.tool-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
 }
 
 .tool-btn {
-    width: 100%;
-    padding: 10px;
-    background-color: #2c3e50;
-    color: white;
+    background-color: transparent;
     border: none;
+    padding: 10px;
     border-radius: 5px;
     cursor: pointer;
-    margin-bottom: 5px;
-    text-align: left;
+    color: var(--primary-color);
+    transition: background-color 0.3s;
 }
 
 .tool-btn:hover {
-    background-color: #1abc9c;
+    background-color: #f0f0f0;
 }
 
-.canvas-area {
-    flex-grow: 1;
+.canvas-wrapper {
+    grid-column: 2 / 3;
     position: relative;
     background-color: white;
-    padding: 20px;
-    overflow: auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 canvas {
-    border: 1px solid #ddd;
+    width: var(--canvas-width);
+    height: var(--canvas-height);
     background-color: white;
+    border: 1px solid #ddd;
 }
 
 .zoom-controls {
     position: absolute;
-    bottom: 20px;
-    right: 20px;
+    bottom: 10px;
+    right: 10px;
     display: flex;
-    gap: 10px;
+    gap: 5px;
 }
 
 .zoom-controls button {
-    background-color: #34495e;
+    background-color: var(--primary-color);
     color: white;
     border: none;
-    padding: 8px 12px;
+    padding: 5px 10px;
     border-radius: 5px;
     cursor: pointer;
 }
 
 .layers-panel {
-    width: 250px;
-    background-color: #ecf0f1;
-    padding: 20px;
-    border-left: 1px solid #ddd;
+    grid-column: 3 / 4;
+    background-color: white;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .layers-panel h3 {
-    color: #34495e;
+    color: var(--primary-color);
     margin-bottom: 10px;
 }
 
-.layers-panel div {
-    max-height: 300px;
-    overflow-y: auto;
+.status-bar {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 10px 30px;
+    display: flex;
+    gap: 20px;
+    font-size: 14px;
+}
+
+/* Tooltips */
+[data-tooltip] {
+    position: relative;
+}
+
+[data-tooltip]::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--primary-color);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+[data-tooltip]:hover::after {
+    opacity: 1;
 }
