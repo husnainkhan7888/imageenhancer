@@ -3,34 +3,57 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>HK Tools - Image Editor</title>
+  <title>HK Tools - Professional Image Editor</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header>
-    <div class="logo">
-      <!-- Replace with your actual logo file or URL -->
-      <img src="hktools-logo.png" alt="HK Tools Logo" />
-      <h1>HK Tools Image Editor</h1>
+    <div class="header-container">
+      <div class="logo">
+        <!-- Replace with your logo image -->
+        <img src="hktools-logo.png" alt="HK Tools Logo" />
+        <span>HK Tools</span>
+      </div>
+      <nav class="toolbar">
+        <button id="homeBtn">Home</button>
+        <button id="openImageBtn">Open Image</button>
+        <button id="cropBtn">Crop</button>
+        <button id="resizeBtn">Resize</button>
+        <div class="dropdown">
+          <button id="filtersBtn">Filters</button>
+          <div class="dropdown-content">
+            <button class="filter-option" data-filter="grayscale">Grayscale</button>
+            <button class="filter-option" data-filter="invert">Invert</button>
+          </div>
+        </div>
+        <button id="rotateBtn">Rotate</button>
+        <button id="drawBtn">Draw</button>
+        <button id="saveBtn">Save</button>
+      </nav>
     </div>
-    <nav>
-      <button id="homeBtn">Home</button>
-      <button id="openImageBtn">Open Image</button>
-      <button id="cropBtn">Crop</button>
-      <button id="resizeBtn">Resize</button>
-      <button id="filtersBtn">Filters</button>
-      <button id="saveBtn">Save</button>
-    </nav>
   </header>
 
   <main>
-    <section class="editor">
-      <!-- Hidden file input triggered by "Open Image" button -->
+    <div class="editor-container">
+      <!-- Hidden file input -->
       <input type="file" id="imageInput" accept="image/*" hidden />
-      <!-- Canvas for displaying the image -->
+      <!-- Canvas container -->
       <canvas id="imageCanvas"></canvas>
-    </section>
+    </div>
   </main>
+
+  <!-- Resize Modal -->
+  <div id="resizeModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h3>Resize Image</h3>
+      <label for="newWidth">Width:</label>
+      <input type="number" id="newWidth" placeholder="New width" />
+      <label for="newHeight">Height:</label>
+      <input type="number" id="newHeight" placeholder="New height" />
+      <button id="applyResize">Apply</button>
+    </div>
+  </div>
 
   <footer>
     <p>&copy; 2025 HK Tools. All Rights Reserved.</p>
