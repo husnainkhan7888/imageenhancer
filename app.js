@@ -1,5 +1,5 @@
-document.addEventListener('DOMContentLoaded', function() {
-  // Global elements and state variables
+document.addEventListener('DOMContentLoaded', () => {
+  // Elements
   const openImageBtn = document.getElementById('openImageBtn');
   const imageInput = document.getElementById('imageInput');
   const canvas = document.getElementById('imageCanvas');
@@ -17,19 +17,14 @@ document.addEventListener('DOMContentLoaded', function() {
   const newWidthInput = document.getElementById('newWidth');
   const newHeightInput = document.getElementById('newHeight');
 
+  // State variables
   let image = new Image();
   let originalImageData = null;
   let cropMode = false;
   let drawMode = false;
-  let cropping = {
-    startX: 0,
-    startY: 0,
-    endX: 0,
-    endY: 0,
-    dragging: false
-  };
+  let cropping = { startX: 0, startY: 0, dragging: false };
 
-  // Open image
+  // --- Open Image ---
   openImageBtn.addEventListener('click', () => {
     imageInput.click();
   });
@@ -37,13 +32,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const file = e.target.files[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = function(evt) {
+    reader.onload = (evt) => {
       image = new Image();
-      image.onload = function() {
+      image.onload = () => {
         canvas.width = image.width;
         canvas.height = image.height;
         ctx.drawImage(image, 0, 0);
-        // Save original image data
         originalImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
       };
       image.src = evt.target.result;
@@ -51,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
     reader.readAsDataURL(file);
   });
 
-  // Home button: reset canvas
+  // --- Home Button: Reset to Original ---
   homeBtn.addEventListener('click', () => {
     if (originalImageData) {
       canvas.width = originalImageData.width;
@@ -63,15 +57,18 @@ document.addEventListener('DOMContentLoaded', function() {
     cropMode = false;
     drawMode = false;
     canvas.style.cursor = "default";
-    alert("Returned to Home!");
   });
 
-  // Crop functionality: enable crop mode and allow user to draw rectangle
+  // --- Crop Functionality ---
   cropBtn.addEventListener('click', () => {
+    if (!image.src) {
+      alert("Load an image first.");
+      return;
+    }
     cropMode = true;
     drawMode = false;
     canvas.style.cursor = "crosshair";
-    alert("Crop mode enabled. Click and drag on the image to select area.");
+    alert("Crop mode enabled: click and drag to select the area to crop.");
   });
 
   canvas.addEventListener('mousedown', (e) => {
@@ -95,7 +92,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
     if (cropMode && cropping.dragging) {
-      // Redraw the image then overlay the cropping rectangle
+      // Redraw original image then draw crop rectangle
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.drawImage(image, 0, 0);
       ctx.strokeStyle = "red";
@@ -115,26 +112,28 @@ document.addEventListener('DOMContentLoaded', function() {
   canvas.addEventListener('mouseup', (e) => {
     if (cropMode && cropping.dragging) {
       const rect = canvas.getBoundingClientRect();
-      cropping.endX = e.clientX - rect.left;
-      cropping.endY = e.clientY - rect.top;
+      const endX = e.clientX - rect.left;
+      const endY = e.clientY - rect.top;
       cropping.dragging = false;
-      // Calculate crop dimensions
-      let cropX = Math.min(cropping.startX, cropping.endX);
-      let cropY = Math.min(cropping.startY, cropping.endY);
-      let cropWidth = Math.abs(cropping.endX - cropping.startX);
-      let cropHeight = Math.abs(cropping.endY - cropping.startY);
-      // Get the cropped image data and update canvas
-      const croppedData = ctx.getImageData(cropX, cropY, cropWidth, cropHeight);
-      canvas.width = cropWidth;
-      canvas.height = cropHeight;
-      ctx.putImageData(croppedData, 0, 0);
-      // Update the image object to the cropped image
-      const croppedImg = new Image();
-      croppedImg.src = canvas.toDataURL();
-      croppedImg.onload = function() {
-        image = croppedImg;
-        originalImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      };
+      // Determine crop rectangle dimensions
+      const cropX = Math.min(cropping.startX, endX);
+      const cropY = Math.min(cropping.startY, endY);
+      const cropWidth = Math.abs(endX - cropping.startX);
+      const cropHeight = Math.abs(endY - cropping.startY);
+      if(cropWidth && cropHeight){
+        // Get the cropped image and update canvas
+        const croppedData = ctx.getImageData(cropX, cropY, cropWidth, cropHeight);
+        canvas.width = cropWidth;
+        canvas.height = cropHeight;
+        ctx.putImageData(croppedData, 0, 0);
+        // Update image object with new cropped image
+        const croppedImg = new Image();
+        croppedImg.onload = () => {
+          image = croppedImg;
+          originalImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        };
+        croppedImg.src = canvas.toDataURL();
+      }
       cropMode = false;
       canvas.style.cursor = "default";
     }
@@ -143,12 +142,14 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  // Resize functionality: open modal for new dimensions
+  // --- Resize Functionality ---
   resizeBtn.addEventListener('click', () => {
     if (!image.src) {
-      alert("Please load an image first.");
+      alert("Load an image first.");
       return;
     }
+    newWidthInput.value = canvas.width;
+    newHeightInput.value = canvas.height;
     resizeModal.style.display = "block";
   });
   closeModal.addEventListener('click', () => {
@@ -158,20 +159,18 @@ document.addEventListener('DOMContentLoaded', function() {
     const newWidth = parseInt(newWidthInput.value);
     const newHeight = parseInt(newHeightInput.value);
     if (isNaN(newWidth) || isNaN(newHeight) || newWidth <= 0 || newHeight <= 0) {
-      alert("Please enter valid dimensions.");
+      alert("Enter valid dimensions.");
       return;
     }
-    // Create a temporary canvas to draw the resized image
+    // Create a temporary canvas to perform resizing
     const tempCanvas = document.createElement('canvas');
     const tempCtx = tempCanvas.getContext('2d');
     tempCanvas.width = newWidth;
     tempCanvas.height = newHeight;
     tempCtx.drawImage(image, 0, 0, newWidth, newHeight);
-    // Update main canvas
     canvas.width = newWidth;
     canvas.height = newHeight;
     ctx.drawImage(tempCanvas, 0, 0);
-    // Update image and original data
     image.src = canvas.toDataURL();
     image.onload = () => {
       originalImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -179,15 +178,14 @@ document.addEventListener('DOMContentLoaded', function() {
     resizeModal.style.display = "none";
   });
 
-  // Filters functionality: apply chosen filter
+  // --- Filters ---
   filterOptions.forEach(btn => {
     btn.addEventListener('click', () => {
       if (!image.src) {
-        alert("Please load an image first.");
+        alert("Load an image first.");
         return;
       }
-      const filter = btn.dataset.filter;
-      applyFilter(filter);
+      applyFilter(btn.dataset.filter);
     });
   });
 
@@ -196,28 +194,27 @@ document.addEventListener('DOMContentLoaded', function() {
     const data = imageData.data;
     if (filter === "grayscale") {
       for (let i = 0; i < data.length; i += 4) {
-        let avg = (data[i] + data[i+1] + data[i+2]) / 3;
+        const avg = (data[i] + data[i+1] + data[i+2]) / 3;
         data[i] = data[i+1] = data[i+2] = avg;
       }
     } else if (filter === "invert") {
       for (let i = 0; i < data.length; i += 4) {
-        data[i] = 255 - data[i];       // red
-        data[i+1] = 255 - data[i+1];   // green
-        data[i+2] = 255 - data[i+2];   // blue
+        data[i] = 255 - data[i];
+        data[i+1] = 255 - data[i+1];
+        data[i+2] = 255 - data[i+2];
       }
     }
     ctx.putImageData(imageData, 0, 0);
-    // Update the image and original data
     image.src = canvas.toDataURL();
     image.onload = () => {
       originalImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
     };
   }
 
-  // Rotate functionality: rotate image 90° clockwise
+  // --- Rotate (90° Clockwise) ---
   rotateBtn.addEventListener('click', () => {
     if (!image.src) {
-      alert("Please load an image first.");
+      alert("Load an image first.");
       return;
     }
     // Create a temporary canvas with swapped dimensions
@@ -225,35 +222,33 @@ document.addEventListener('DOMContentLoaded', function() {
     const tempCtx = tempCanvas.getContext('2d');
     tempCanvas.width = canvas.height;
     tempCanvas.height = canvas.width;
-    tempCtx.translate(tempCanvas.width/2, tempCanvas.height/2);
-    tempCtx.rotate(90 * Math.PI/180);
-    tempCtx.drawImage(canvas, -canvas.width/2, -canvas.height/2);
-    // Update main canvas dimensions and content
+    tempCtx.translate(tempCanvas.width / 2, tempCanvas.height / 2);
+    tempCtx.rotate(90 * Math.PI / 180);
+    tempCtx.drawImage(canvas, -canvas.width / 2, -canvas.height / 2);
     canvas.width = tempCanvas.width;
     canvas.height = tempCanvas.height;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(tempCanvas, 0, 0);
-    // Update image and original data
     image.src = canvas.toDataURL();
     image.onload = () => {
       originalImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
     };
   });
 
-  // Draw functionality: toggle free drawing mode
+  // --- Draw Mode ---
   drawBtn.addEventListener('click', () => {
     if (!image.src) {
-      alert("Please load an image first.");
+      alert("Load an image first.");
       return;
     }
     drawMode = !drawMode;
     cropMode = false;
     canvas.style.cursor = drawMode ? "crosshair" : "default";
     drawBtn.classList.toggle('active', drawMode);
-    alert(drawMode ? "Draw mode enabled. Draw on the image with your mouse." : "Draw mode disabled.");
+    alert(drawMode ? "Draw mode enabled." : "Draw mode disabled.");
   });
 
-  // Save functionality: download canvas as image
+  // --- Save Image ---
   saveBtn.addEventListener('click', () => {
     if (!image.src) {
       alert("No image to save.");
@@ -265,9 +260,9 @@ document.addEventListener('DOMContentLoaded', function() {
     link.click();
   });
 
-  // Close modal if clicking outside content
+  // Close modal when clicking outside the modal content
   window.addEventListener('click', (e) => {
-    if (e.target == resizeModal) {
+    if (e.target === resizeModal) {
       resizeModal.style.display = "none";
     }
   });
