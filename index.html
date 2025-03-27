@@ -1,27 +1,214 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>hkediting - Home</title>
-  <link rel="stylesheet" href="styles.css" />
+  <meta charset="utf-8">
+  <title>hkediting Image Editor Debug</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Fabric.js Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.6.0/fabric.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    canvas { border: 1px solid #ccc; margin: 10px 0; }
+    .toolbar button { margin: 5px; padding: 8px 12px; cursor: pointer; }
+  </style>
 </head>
 <body>
-  <header>
-    <h1>hkediting</h1>
-  </header>
+  <h1>hkediting - Image Editor Debug</h1>
+  <input type="file" id="imageUpload" accept="image/*"><br>
+  <canvas id="imageCanvas" width="800" height="600"></canvas>
+  <div class="toolbar">
+    <button onclick="applyFilter('grayscale')">Grayscale</button>
+    <button onclick="applyFilter('invert')">Invert</button>
+    <button onclick="applyFilter('sepia')">Sepia</button>
+    <button onclick="applyFilter('brightness')">Brightness +10%</button>
+    <button onclick="applyFilter('contrast')">Contrast +10%</button>
+    <button onclick="applyFilter('saturation')">Saturation +10%</button>
+    <button onclick="resetFilters()">Reset Filters</button>
+    <br>
+    <button onclick="startCrop()">Start Crop</button>
+    <button onclick="applyCrop()">Apply Crop</button>
+    <button onclick="cancelCrop()">Cancel Crop</button>
+    <br>
+    <button onclick="addText()">Add Text</button>
+    <br>
+    <button onclick="removeBackground()">Remove Background (Demo)</button>
+    <br>
+    <button onclick="resetImage()">Reset Image</button>
+    <button onclick="downloadImage()">Download Image</button>
+  </div>
 
-  <main class="landing-container">
-    <h2>Welcome to hkediting</h2>
-    <p>Your one-stop solution for advanced image and video editing, all in your browser.</p>
-    <div class="landing-buttons">
-      <a href="image-editor.html" class="btn">Go to Image Editor</a>
-      <a href="video-editor.html" class="btn">Go to Video Editor</a>
-    </div>
-  </main>
+  <script>
+    let canvas = new fabric.Canvas('imageCanvas');
+    let imgInstance = null;
+    let originalImage = null;
+    let cropRect = null;
+    let isCropping = false;
 
-  <footer>
-    <p>&copy; 2025 hkediting. All rights reserved.</p>
-  </footer>
+    // Load image on file select
+    document.getElementById('imageUpload').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(f) {
+        fabric.Image.fromURL(f.target.result, function(img) {
+          canvas.clear();
+          imgInstance = img;
+          // Clone the original for reset later
+          originalImage = img.clone();
+          // Scale image to fit the canvas (80% of canvas width)
+          img.scaleToWidth(canvas.width * 0.8);
+          canvas.add(img);
+          canvas.renderAll();
+        });
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // -------------------------------
+    // 1. Filter Functions
+    // -------------------------------
+    function applyFilter(type) {
+      if (!imgInstance) {
+        alert("Please upload an image first.");
+        return;
+      }
+      // Reset filters first for demo simplicity
+      imgInstance.filters = [];
+      switch (type) {
+        case 'grayscale':
+          imgInstance.filters.push(new fabric.Image.filters.Grayscale());
+          break;
+        case 'invert':
+          imgInstance.filters.push(new fabric.Image.filters.Invert());
+          break;
+        case 'sepia':
+          imgInstance.filters.push(new fabric.Image.filters.Sepia());
+          break;
+        case 'brightness':
+          imgInstance.filters.push(new fabric.Image.filters.Brightness({ brightness: 0.1 }));
+          break;
+        case 'contrast':
+          imgInstance.filters.push(new fabric.Image.filters.Contrast({ contrast: 0.1 }));
+          break;
+        case 'saturation':
+          imgInstance.filters.push(new fabric.Image.filters.Saturation({ saturation: 0.1 }));
+          break;
+        default:
+          return;
+      }
+      imgInstance.applyFilters();
+      canvas.renderAll();
+    }
+
+    function resetFilters() {
+      if (!imgInstance) return;
+      imgInstance.filters = [];
+      imgInstance.applyFilters();
+      canvas.renderAll();
+    }
+
+    // -------------------------------
+    // 2. Crop Functions
+    // -------------------------------
+    function startCrop() {
+      if (!imgInstance || isCropping) return;
+      const rect = imgInstance.getBoundingRect();
+      cropRect = new fabric.Rect({
+        left: rect.left + 10,
+        top: rect.top + 10,
+        width: rect.width - 20,
+        height: rect.height - 20,
+        fill: 'rgba(0,0,0,0.3)',
+        stroke: 'red',
+        strokeWidth: 2,
+        selectable: true
+      });
+      canvas.add(cropRect);
+      canvas.setActiveObject(cropRect);
+      isCropping = true;
+    }
+
+    function applyCrop() {
+      if (!cropRect || !imgInstance) return;
+      const rect = cropRect.getBoundingRect();
+      // Calculate crop parameters relative to the original image
+      const scaleX = imgInstance.scaleX;
+      const scaleY = imgInstance.scaleY;
+      const cropX = (rect.left - imgInstance.left) / scaleX;
+      const cropY = (rect.top - imgInstance.top) / scaleY;
+      const cropWidth = rect.width / scaleX;
+      const cropHeight = rect.height / scaleY;
+
+      // Remove the crop rectangle
+      canvas.remove(cropRect);
+      cropRect = null;
+      isCropping = false;
+
+      // Use clipPath to simulate cropping
+      imgInstance.clipPath = new fabric.Rect({
+        left: cropX,
+        top: cropY,
+        width: cropWidth,
+        height: cropHeight,
+        absolutePositioned: true
+      });
+      canvas.renderAll();
+    }
+
+    function cancelCrop() {
+      if (cropRect) {
+        canvas.remove(cropRect);
+        cropRect = null;
+        isCropping = false;
+        canvas.renderAll();
+      }
+    }
+
+    // -------------------------------
+    // 3. Add Text
+    // -------------------------------
+    function addText() {
+      const textbox = new fabric.Textbox("Your Text Here", {
+        left: 50,
+        top: 50,
+        fontFamily: 'Arial',
+        fontSize: 24,
+        fill: '#000'
+      });
+      canvas.add(textbox);
+      canvas.setActiveObject(textbox);
+    }
+
+    // -------------------------------
+    // 4. Background Removal (Demo)
+    // -------------------------------
+    function removeBackground() {
+      alert("Demo: Remove Background functionality not implemented.\nIntegrate an API or ML model here.");
+    }
+
+    // -------------------------------
+    // 5. Reset and Download
+    // -------------------------------
+    function resetImage() {
+      if (!originalImage) return;
+      canvas.clear();
+      originalImage.clone(function(clone) {
+        imgInstance = clone;
+        canvas.add(clone);
+        canvas.renderAll();
+      });
+    }
+
+    function downloadImage() {
+      if (!imgInstance) return;
+      const dataURL = canvas.toDataURL({
+        format: 'png'
+      });
+      const link = document.createElement("a");
+      link.href = dataURL;
+      link.download = "edited_image.png";
+      link.click();
+    }
+  </script>
 </body>
 </html>
