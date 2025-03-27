@@ -1,92 +1,86 @@
-// Crop
-document.getElementById('cropBtn').addEventListener('click', () => {
-    const activeObj = canvas.getActiveObject();
-    if (!activeObj || !(activeObj instanceof fabric.Image)) {
-        alert('Select an image to crop.');
-        return;
-    }
-
-    const rect = new fabric.Rect({
-        left: activeObj.left,
-        top: activeObj.top,
-        width: activeObj.width * 0.5,
-        height: activeObj.height * 0.5,
-        fill: 'transparent',
-        stroke: '#e74c3c',
-        strokeWidth: 2,
-        selectable: true,
-    });
-
-    canvas.add(rect);
-    canvas.setActiveObject(rect);
-    canvas.renderAll();
-
-    setTimeout(() => {
-        const cropRect = canvas.getActiveObject();
-        if (cropRect && cropRect.type === 'rect') {
-            const croppedImg = new fabric.Image(activeObj.getElement(), {
-                left: cropRect.left,
-                top: cropRect.top,
-                width: cropRect.width,
-                height: cropRect.height,
-                clipPath: cropRect,
-            });
-            canvas.remove(activeObj);
-            canvas.remove(cropRect);
-            canvas.add(croppedImg);
-            canvas.renderAll();
-        }
-    }, 100);
-});
-
-// Rotate
-document.getElementById('rotateBtn').addEventListener('click', () => {
-    const activeObj = canvas.getActiveObject();
-    if (!activeObj) {
-        alert('Select an object to rotate.');
-        return;
-    }
-    activeObj.rotate(activeObj.angle + 90);
-    canvas.renderAll();
-});
-
-// Add Text
-document.getElementById('textBtn').addEventListener('click', () => {
-    const text = new fabric.Textbox('Type here...', {
-        left: 50,
-        top: 50,
-        fontSize: 24,
-        fill: '#333',
-        fontFamily: 'Arial',
-        editable: true,
-    });
-    canvas.add(text);
-    canvas.setActiveObject(text);
-    canvas.renderAll();
-});
-
-// Undo/Redo
-let undoStack = [];
-let redoStack = [];
-
-canvas.on('object:added', () => saveState());
-
-function saveState() {
-    undoStack.push(JSON.stringify(canvas));
-    redoStack = [];
+/* Reset default spacing and box sizing */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-document.getElementById('undoBtn').addEventListener('click', () => {
-    if (undoStack.length > 1) {
-        redoStack.push(undoStack.pop());
-        canvas.loadFromJSON(undoStack[undoStack.length - 1], () => canvas.renderAll());
-    }
-});
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f4f4;
+  color: #333;
+  line-height: 1.6;
+}
 
-document.getElementById('redoBtn').addEventListener('click', () => {
-    if (redoStack.length > 0) {
-        const state = redoStack.pop();
-        undoStack.push(state);
-        canvas.loadFromJSON(state, () => canvas.renderAll());
-    }
-});
+/* Header styling with a dark background */
+header {
+  background: #35424a;
+  color: #ffffff;
+  padding: 20px 0;
+}
+
+/* Logo and title alignment */
+header .logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+header .logo img {
+  width: 50px;
+  height: auto;
+  margin-right: 10px;
+}
+
+/* Navigation buttons styling */
+nav {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+nav button {
+  padding: 10px 20px;
+  border: none;
+  background: #e8491d;
+  color: #fff;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background 0.3s ease;
+}
+
+nav button:hover {
+  background: #cf3e14;
+}
+
+/* Main editor area */
+main {
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.editor {
+  background: #fff;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Canvas styling */
+canvas {
+  max-width: 100%;
+  border: 1px solid #ddd;
+}
+
+/* Footer fixed at the bottom */
+footer {
+  text-align: center;
+  padding: 10px;
+  background: #35424a;
+  color: #fff;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
