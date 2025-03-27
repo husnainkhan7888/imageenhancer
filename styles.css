@@ -1,86 +1,149 @@
-/* Reset default spacing and box sizing */
+/* Reset and global styles */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
-
 body {
-  font-family: Arial, sans-serif;
-  background: #f4f4f4;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f0f2f5;
   color: #333;
-  line-height: 1.6;
+  min-height: 100vh;
 }
 
-/* Header styling with a dark background */
+/* Header and Toolbar */
 header {
-  background: #35424a;
-  color: #ffffff;
-  padding: 20px 0;
+  background: #24292e;
+  color: #fff;
+  padding: 10px 20px;
 }
-
-/* Logo and title alignment */
-header .logo {
+.header-container {
   display: flex;
   align-items: center;
-  justify-content: center;
-  margin-bottom: 10px;
+  justify-content: space-between;
 }
-
-header .logo img {
-  width: 50px;
-  height: auto;
+.logo {
+  display: flex;
+  align-items: center;
+  font-size: 1.5rem;
+}
+.logo img {
+  width: 40px;
   margin-right: 10px;
 }
-
-/* Navigation buttons styling */
-nav {
+.toolbar {
   display: flex;
-  justify-content: center;
   gap: 10px;
 }
-
-nav button {
-  padding: 10px 20px;
-  border: none;
-  background: #e8491d;
+.toolbar button {
+  background: #0366d6;
   color: #fff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
   cursor: pointer;
-  border-radius: 5px;
-  transition: background 0.3s ease;
+  transition: background 0.3s;
+}
+.toolbar button:hover,
+.toolbar button.active {
+  background: #0255b4;
 }
 
-nav button:hover {
-  background: #cf3e14;
+/* Dropdown for Filters */
+.dropdown {
+  position: relative;
+  display: inline-block;
 }
-
-/* Main editor area */
-main {
-  padding: 20px;
-  display: flex;
-  justify-content: center;
-}
-
-.editor {
+.dropdown-content {
+  display: none;
+  position: absolute;
   background: #fff;
-  padding: 20px;
-  border-radius: 5px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  min-width: 120px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  z-index: 1;
+  border-radius: 4px;
+}
+.dropdown-content button {
+  background: #fff;
+  color: #333;
+  padding: 8px 12px;
+  border: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+}
+.dropdown-content button:hover {
+  background: #f0f0f0;
+}
+.dropdown:hover .dropdown-content {
+  display: block;
 }
 
-/* Canvas styling */
+/* Main Editor Area */
+.editor-container {
+  margin: 20px auto;
+  width: 90%;
+  max-width: 1000px;
+  background: #fff;
+  padding: 15px;
+  border-radius: 6px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  text-align: center;
+}
 canvas {
   max-width: 100%;
-  border: 1px solid #ddd;
+  border: 1px solid #ccc;
 }
 
-/* Footer fixed at the bottom */
+/* Footer */
 footer {
   text-align: center;
   padding: 10px;
-  background: #35424a;
+  background: #24292e;
   color: #fff;
   position: fixed;
   bottom: 0;
   width: 100%;
+}
+
+/* Modal styles for resizing */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 2;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background: rgba(0,0,0,0.5);
+}
+.modal-content {
+  background: #fff;
+  margin: 10% auto;
+  padding: 20px;
+  border-radius: 6px;
+  width: 300px;
+  text-align: center;
+  position: relative;
+}
+.modal-content input {
+  width: 80%;
+  padding: 6px;
+  margin: 10px 0;
+}
+.modal-content button {
+  background: #0366d6;
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.modal-content .close {
+  position: absolute;
+  right: 10px;
+  top: 5px;
+  font-size: 1.5rem;
+  cursor: pointer;
 }
