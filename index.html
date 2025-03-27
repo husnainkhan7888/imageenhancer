@@ -1,81 +1,31 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HKTools - Professional Image Editor</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <!-- Header -->
-    <header class="header">
-        <div class="logo">
-            <img src="https://via.placeholder.com/40x40?text=HK" alt="HKTools Logo">
-            <span>HKTools</span>
-        </div>
-        <div class="actions">
-            <button id="homeBtn" class="btn">Home</button>
-            <button id="saveBtn" class="btn">Save</button>
-        </div>
-    </header>
-
-    <!-- Main Container -->
-    <div class="editor-container">
-        <!-- Toolbar -->
-        <div class="toolbar">
-            <div class="tool-group">
-                <button class="tool-btn" data-tooltip="Upload Image" onclick="document.getElementById('imageInput').click()">
-                    <i class="fas fa-upload"></i>
-                </button>
-                <input type="file" id="imageInput" accept="image/*" hidden>
-            </div>
-
-            <div class="tool-group">
-                <button class="tool-btn" data-tooltip="Crop"><i class="fas fa-crop"></i></button>
-                <button class="tool-btn" data-tooltip="Rotate"><i class="fas fa-redo"></i></button>
-                <button class="tool-btn" data-tooltip="Resize"><i class="fas fa-expand"></i></button>
-            </div>
-
-            <div class="tool-group">
-                <button class="tool-btn" data-tooltip="Text"><i class="fas fa-font"></i></button>
-                <button class="tool-btn" data-tooltip="Shape"><i class="fas fa-shapes"></i></button>
-            </div>
-
-            <div class="tool-group">
-                <button class="tool-btn" data-tooltip="Grayscale"><i class="fas fa-adjust"></i></button>
-                <button class="tool-btn" data-tooltip="Sepia"><i class="fas fa-image"></i></button>
-            </div>
-
-            <div class="tool-group">
-                <button class="tool-btn" data-tooltip="Undo"><i class="fas fa-undo"></i></button>
-                <button class="tool-btn" data-tooltip="Redo"><i class="fas fa-redo"></i></button>
-            </div>
-        </div>
-
-        <!-- Canvas Area -->
-        <div class="canvas-wrapper">
-            <canvas id="canvas"></canvas>
-            <div class="zoom-controls">
-                <button id="zoomInBtn"><i class="fas fa-search-plus"></i></button>
-                <button id="zoomOutBtn"><i class="fas fa-search-minus"></i></button>
-            </div>
-        </div>
-
-        <!-- Layers Panel -->
-        <div class="layers-panel">
-            <h3>Layers</h3>
-            <div id="layersList"></div>
-        </div>
+<!-- Toolbar -->
+<div class="toolbar">
+    <div class="tool-group">
+        <button class="tool-btn" data-tooltip="Upload Image" onclick="document.getElementById('imageInput').click()">
+            <i class="fas fa-upload"></i>
+        </button>
+        <input type="file" id="imageInput" accept="image/*" hidden>
     </div>
 
-    <!-- Status Bar -->
-    <div class="status-bar">
-        <div id="zoomLevel">100%</div>
-        <div id="canvasSize">800x600px</div>
+    <div class="tool-group">
+        <!-- Add IDs to buttons -->
+        <button id="cropBtn" class="tool-btn" data-tooltip="Crop"><i class="fas fa-crop"></i></button>
+        <button id="rotateBtn" class="tool-btn" data-tooltip="Rotate"><i class="fas fa-redo"></i></button>
+        <button id="resizeBtn" class="tool-btn" data-tooltip="Resize"><i class="fas fa-expand"></i></button>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.2.4/fabric.min.js"></script>
-    <script src="app.js"></script>
-</body>
-</html>
+    <div class="tool-group">
+        <button id="textBtn" class="tool-btn" data-tooltip="Text"><i class="fas fa-font"></i></button>
+        <button id="shapeBtn" class="tool-btn" data-tooltip="Shape"><i class="fas fa-shapes"></i></button>
+    </div>
+
+    <div class="tool-group">
+        <button id="grayscaleBtn" class="tool-btn" data-tooltip="Grayscale"><i class="fas fa-adjust"></i></button>
+        <button id="sepiaBtn" class="tool-btn" data-tooltip="Sepia"><i class="fas fa-image"></i></button>
+    </div>
+
+    <div class="tool-group">
+        <button id="undoBtn" class="tool-btn" data-tooltip="Undo"><i class="fas fa-undo"></i></button>
+        <button id="redoBtn" class="tool-btn" data-tooltip="Redo"><i class="fas fa-redo"></i></button>
+    </div>
+</div>
