@@ -1,34 +1,113 @@
 /* styles.css */
-body, html {
+body {
     margin: 0;
-    padding: 0;
-    height: 100%;
-    overflow: hidden;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f5f5;
 }
 
+/* Header */
+.header {
+    background-color: #2c3e50;
+    color: white;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.version {
+    font-size: 14px;
+    color: #95a5a6;
+}
+
+/* Editor Container */
 .editor-container {
     display: flex;
-    height: 100vh;
-    width: 100vw;
+    height: calc(100vh - 60px);
 }
 
 .sidebar {
-    width: 250px;
-    background-color: #2c3e50;
+    width: 280px;
+    background-color: #34495e;
     color: white;
     padding: 20px;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+}
+
+.tool-section {
+    margin-bottom: 20px;
+}
+
+.tool-section h3 {
+    color: #bdc3c7;
+    margin-bottom: 10px;
+}
+
+.tool-btn {
+    width: 100%;
+    padding: 10px;
+    background-color: #2c3e50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 5px;
+    text-align: left;
+}
+
+.tool-btn:hover {
+    background-color: #1abc9c;
 }
 
 .canvas-area {
     flex-grow: 1;
-    background-color: #ecf0f1;
+    position: relative;
+    background-color: white;
     padding: 20px;
-    overflow: auto; /* Enable scrolling if needed */
+    overflow: auto;
 }
 
 canvas {
-    border: 2px solid #bdc3c7;
-    width: 100% !important; /* Force full width */
-    height: 100% !important; /* Force full height */
+    border: 1px solid #ddd;
+    background-color: white;
+}
+
+.zoom-controls {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+.zoom-controls button {
+    background-color: #34495e;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.layers-panel {
+    width: 250px;
+    background-color: #ecf0f1;
+    padding: 20px;
+    border-left: 1px solid #ddd;
+}
+
+.layers-panel h3 {
+    color: #34495e;
+    margin-bottom: 10px;
+}
+
+.layers-panel div {
+    max-height: 300px;
+    overflow-y: auto;
 }
