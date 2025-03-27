@@ -179,3 +179,16 @@ document.getElementById('saveBtn').addEventListener('click', () => {
     link.download = 'edited-image.jpg';
     link.click();
 });
+// app.js (add this at the bottom)
+function resizeCanvas() {
+    const canvasElement = document.getElementById('canvas');
+    canvas.setWidth(canvasElement.parentElement.offsetWidth - 40); // Adjust for padding
+    canvas.setHeight(window.innerHeight - 40); // Adjust for padding
+    canvas.renderAll();
+}
+
+// Initial resize
+resizeCanvas();
+
+// Resize on window changes
+window.addEventListener('resize', resizeCanvas);
