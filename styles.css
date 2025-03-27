@@ -6,114 +6,101 @@
 }
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: #f0f2f5;
+  background-color: #f4f7f9;
   color: #333;
+  display: flex;
+  flex-direction: column;
   min-height: 100vh;
 }
 
-/* Header & Toolbar */
+/* HEADER */
 header {
-  background: #24292e;
-  color: #fff;
-  padding: 10px 20px;
-}
-.header-container {
+  background-color: #2c3e50;
+  color: #ecf0f1;
+  padding: 15px 20px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  position: relative;
 }
-.logo {
-  display: flex;
-  align-items: center;
-  font-size: 1.5rem;
+header .logo {
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
 }
-.logo img {
-  width: 40px;
-  margin-right: 10px;
+header .logo img {
+  width: 45px;
+  height: auto;
 }
+header h1 {
+  font-size: 1.8rem;
+}
+
+/* TOOLBAR */
 .toolbar {
+  background: #34495e;
+  padding: 10px 15px;
   display: flex;
-  gap: 10px;
   flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+.toolbar input[type="file"] {
+  display: none;
+}
+.toolbar label[for="upload"] {
+  background: #16a085;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+.toolbar label[for="upload"]:hover {
+  background: #138d75;
 }
 .toolbar button {
-  background: #0366d6;
+  background: #2980b9;
   color: #fff;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background 0.3s;
-}
-.toolbar button:hover,
-.toolbar button.active {
-  background: #0255b4;
-}
-
-/* Dropdown Menu for Filters */
-.dropdown {
-  position: relative;
-  display: inline-block;
-}
-.dropdown-content {
-  display: none;
-  position: absolute;
-  background: #fff;
-  min-width: 120px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  z-index: 1;
-  border-radius: 4px;
-  margin-top: 5px;
-}
-.dropdown-content button {
-  background: #fff;
-  color: #333;
   padding: 8px 12px;
   border: none;
-  width: 100%;
-  text-align: left;
+  border-radius: 4px;
   cursor: pointer;
+  transition: background 0.3s ease;
 }
-.dropdown-content button:hover {
-  background: #f0f0f0;
-}
-.dropdown:hover .dropdown-content {
-  display: block;
+.toolbar button:hover {
+  background: #1f6390;
 }
 
-/* Main Editor Area */
+/* EDITOR CONTAINER */
 .editor-container {
-  margin: 20px auto;
-  width: 95%;
-  max-width: 1000px;
-  background: #fff;
-  padding: 15px;
-  border-radius: 6px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  text-align: center;
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 canvas {
-  max-width: 100%;
   border: 1px solid #ccc;
-  cursor: default;
+  max-width: 100%;
+  background: #fff;
 }
 
-/* Footer */
+/* FOOTER */
 footer {
+  background-color: #2c3e50;
+  color: #ecf0f1;
   text-align: center;
-  padding: 10px;
-  background: #24292e;
-  color: #fff;
-  position: fixed;
-  bottom: 0;
-  width: 100%;
+  padding: 12px;
+  font-size: 0.9rem;
 }
 
-/* Modal Styles for Resize */
+/* Modal for Resize (if needed) */
 .modal {
-  display: none;
-  position: fixed;
-  z-index: 2;
+  display: none; 
+  position: fixed; 
+  z-index: 1000; 
   left: 0;
   top: 0;
   width: 100%;
@@ -122,43 +109,35 @@ footer {
 }
 .modal-content {
   background: #fff;
-  margin: 10% auto;
+  width: 300px;
+  margin: 15% auto;
   padding: 20px;
   border-radius: 6px;
-  width: 300px;
   text-align: center;
   position: relative;
 }
-.modal-content h3 {
-  margin-bottom: 15px;
+.modal-content .close {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 1.2rem;
+  cursor: pointer;
 }
-.modal-field {
+.modal-content input {
+  width: 80%;
+  padding: 8px;
   margin: 10px 0;
-  text-align: left;
-}
-.modal-field label {
-  display: block;
-  margin-bottom: 5px;
-}
-.modal-field input {
-  width: 100%;
-  padding: 6px;
   border: 1px solid #ccc;
   border-radius: 4px;
 }
 .modal-content button {
-  background: #0366d6;
+  background: #16a085;
   color: #fff;
-  border: none;
   padding: 8px 12px;
+  border: none;
   border-radius: 4px;
   cursor: pointer;
-  margin-top: 10px;
 }
-.modal-content .close {
-  position: absolute;
-  right: 10px;
-  top: 5px;
-  font-size: 1.5rem;
-  cursor: pointer;
+.modal-content button:hover {
+  background: #138d75;
 }
