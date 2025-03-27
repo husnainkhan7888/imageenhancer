@@ -10,7 +10,7 @@
   <header>
     <div class="header-container">
       <div class="logo">
-        <!-- Replace with your logo image -->
+        <!-- Replace with your logo file path -->
         <img src="hktools-logo.png" alt="HK Tools Logo" />
         <span>HK Tools</span>
       </div>
@@ -47,10 +47,14 @@
     <div class="modal-content">
       <span class="close">&times;</span>
       <h3>Resize Image</h3>
-      <label for="newWidth">Width:</label>
-      <input type="number" id="newWidth" placeholder="New width" />
-      <label for="newHeight">Height:</label>
-      <input type="number" id="newHeight" placeholder="New height" />
+      <div class="modal-field">
+        <label for="newWidth">Width:</label>
+        <input type="number" id="newWidth" placeholder="New width" />
+      </div>
+      <div class="modal-field">
+        <label for="newHeight">Height:</label>
+        <input type="number" id="newHeight" placeholder="New height" />
+      </div>
       <button id="applyResize">Apply</button>
     </div>
   </div>
