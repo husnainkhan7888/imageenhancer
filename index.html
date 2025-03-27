@@ -10,62 +10,51 @@
 <body>
     <!-- Header -->
     <header class="header">
-        <div class="logo">HKTools</div>
-        <div class="version">v1.0</div>
+        <div class="logo">
+            <img src="https://via.placeholder.com/40x40?text=HK" alt="HKTools Logo">
+            <span>HKTools</span>
+        </div>
+        <div class="actions">
+            <button id="homeBtn" class="btn">Home</button>
+            <button id="saveBtn" class="btn">Save</button>
+        </div>
     </header>
 
     <!-- Main Container -->
     <div class="editor-container">
-        <!-- Sidebar -->
-        <div class="sidebar">
-            <!-- Upload Section -->
-            <div class="tool-section">
-                <button id="uploadBtn" class="tool-btn">
-                    <i class="fas fa-upload"></i> Upload
+        <!-- Toolbar -->
+        <div class="toolbar">
+            <div class="tool-group">
+                <button class="tool-btn" data-tooltip="Upload Image" onclick="document.getElementById('imageInput').click()">
+                    <i class="fas fa-upload"></i>
                 </button>
-                <input type="file" id="imageInput" accept="image/*" style="display:none;">
+                <input type="file" id="imageInput" accept="image/*" hidden>
             </div>
 
-            <!-- Editing Tools -->
-            <div class="tool-section">
-                <h3>Tools</h3>
-                <button id="cropBtn" class="tool-btn"><i class="fas fa-crop"></i> Crop</button>
-                <button id="rotateBtn" class="tool-btn"><i class="fas fa-redo"></i> Rotate</button>
-                <button id="resizeBtn" class="tool-btn"><i class="fas fa-expand"></i> Resize</button>
-                <button id="addTextBtn" class="tool-btn"><i class="fas fa-font"></i> Text</button>
-                <button id="addShapeBtn" class="tool-btn"><i class="fas fa-shapes"></i> Shape</button>
+            <div class="tool-group">
+                <button class="tool-btn" data-tooltip="Crop"><i class="fas fa-crop"></i></button>
+                <button class="tool-btn" data-tooltip="Rotate"><i class="fas fa-redo"></i></button>
+                <button class="tool-btn" data-tooltip="Resize"><i class="fas fa-expand"></i></button>
             </div>
 
-            <!-- Filters -->
-            <div class="tool-section">
-                <h3>Filters</h3>
-                <button id="grayscaleBtn" class="tool-btn">Grayscale</button>
-                <button id="sepiaBtn" class="tool-btn">Sepia</button>
-                <button id="vintageBtn" class="tool-btn">Vintage</button>
-                <button id="clarendonBtn" class="tool-btn">Clarendon</button>
+            <div class="tool-group">
+                <button class="tool-btn" data-tooltip="Text"><i class="fas fa-font"></i></button>
+                <button class="tool-btn" data-tooltip="Shape"><i class="fas fa-shapes"></i></button>
             </div>
 
-            <!-- Adjustments -->
-            <div class="tool-section">
-                <h3>Adjustments</h3>
-                <label>Brightness:</label>
-                <input type="range" id="brightnessSlider" min="-100" max="100" value="0">
-                <label>Contrast:</label>
-                <input type="range" id="contrastSlider" min="-100" max="100" value="0">
-                <label>Saturation:</label>
-                <input type="range" id="saturationSlider" min="-100" max="100" value="0">
+            <div class="tool-group">
+                <button class="tool-btn" data-tooltip="Grayscale"><i class="fas fa-adjust"></i></button>
+                <button class="tool-btn" data-tooltip="Sepia"><i class="fas fa-image"></i></button>
             </div>
 
-            <!-- Actions -->
-            <div class="tool-section">
-                <button id="undoBtn" class="tool-btn"><i class="fas fa-undo"></i> Undo</button>
-                <button id="redoBtn" class="tool-btn"><i class="fas fa-redo"></i> Redo</button>
-                <button id="saveBtn" class="tool-btn"><i class="fas fa-save"></i> Save</button>
+            <div class="tool-group">
+                <button class="tool-btn" data-tooltip="Undo"><i class="fas fa-undo"></i></button>
+                <button class="tool-btn" data-tooltip="Redo"><i class="fas fa-redo"></i></button>
             </div>
         </div>
 
         <!-- Canvas Area -->
-        <div class="canvas-area">
+        <div class="canvas-wrapper">
             <canvas id="canvas"></canvas>
             <div class="zoom-controls">
                 <button id="zoomInBtn"><i class="fas fa-search-plus"></i></button>
@@ -78,6 +67,12 @@
             <h3>Layers</h3>
             <div id="layersList"></div>
         </div>
+    </div>
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+        <div id="zoomLevel">100%</div>
+        <div id="canvasSize">800x600px</div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.2.4/fabric.min.js"></script>
