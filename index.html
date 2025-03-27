@@ -1,143 +1,41 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>HKTools - 250x250 Editor</title>
-    <style>
-        body {
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background: #f0f0f0;
-            font-family: Arial;
-        }
-        #canvas {
-            width: 250px !important;
-            height: 250px !important;
-            border: 2px solid #333;
-            background: white;
-        }
-        .toolbar {
-            margin: 10px;
-            display: flex;
-            gap: 10px;
-        }
-        button {
-            padding: 8px 12px;
-            background: #2c3e50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HK Tools - Image Editor</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <h3>HKTools - 250x250 Editor</h3>
-    <div class="toolbar">
-        <input type="file" id="imageInput" accept="image/*" style="display:none;">
-        <button onclick="document.getElementById('imageInput').click()">Upload</button>
-        <button onclick="applyFilter('grayscale')">Grayscale</button>
-        <button onclick="applyFilter('sepia')">Sepia</button>
-        <button onclick="cropImage()">Crop</button>
-        <button onclick="rotateImage()">Rotate</button>
-        <button onclick="saveImage()">Save</button>
+  <header>
+    <div class="logo">
+      <!-- Replace with your actual logo file or URL -->
+      <img src="hktools-logo.png" alt="HK Tools Logo" />
+      <h1>HK Tools Image Editor</h1>
     </div>
-    <canvas id="canvas"></canvas>
+    <nav>
+      <button id="homeBtn">Home</button>
+      <button id="openImageBtn">Open Image</button>
+      <button id="cropBtn">Crop</button>
+      <button id="resizeBtn">Resize</button>
+      <button id="filtersBtn">Filters</button>
+      <button id="saveBtn">Save</button>
+    </nav>
+  </header>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.2.4/fabric.min.js"></script>
-    <script>
-        const canvas = new fabric.Canvas('canvas', {
-            width: 250,
-            height: 250,
-            backgroundColor: '#fff'
-        });
+  <main>
+    <section class="editor">
+      <!-- Hidden file input triggered by "Open Image" button -->
+      <input type="file" id="imageInput" accept="image/*" hidden />
+      <!-- Canvas for displaying the image -->
+      <canvas id="imageCanvas"></canvas>
+    </section>
+  </main>
 
-        // Upload Image
-        document.getElementById('imageInput').addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
+  <footer>
+    <p>&copy; 2025 HK Tools. All Rights Reserved.</p>
+  </footer>
 
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                fabric.Image.fromURL(event.target.result, (img) => {
-                    canvas.clear();
-                    img.scaleToWidth(250); // Fit to 250x250
-                    canvas.add(img);
-                    canvas.centerObject(img);
-                    canvas.renderAll();
-                });
-            };
-            reader.readAsDataURL(file);
-        });
-
-        // Filters
-        function applyFilter(filterType) {
-            const obj = canvas.getActiveObject();
-            if (!obj || !(obj instanceof fabric.Image)) return;
-
-            obj.filters = [];
-            switch (filterType) {
-                case 'grayscale':
-                    obj.filters.push(new fabric.Image.filters.Grayscale());
-                    break;
-                case 'sepia':
-                    obj.filters.push(new fabric.Image.filters.Sepia());
-                    break;
-            }
-            obj.applyFilters();
-            canvas.renderAll();
-        }
-
-        // Crop
-        function cropImage() {
-            const obj = canvas.getActiveObject();
-            if (!obj || !(obj instanceof fabric.Image)) return;
-
-            const rect = new fabric.Rect({
-                left: obj.left,
-                top: obj.top,
-                width: 100,
-                height: 100,
-                fill: 'transparent',
-                stroke: 'red',
-                strokeWidth: 2
-            });
-
-            canvas.add(rect);
-            canvas.setActiveObject(rect);
-
-            setTimeout(() => {
-                const croppedImg = new fabric.Image(obj.getElement(), {
-                    left: rect.left,
-                    top: rect.top,
-                    width: rect.width,
-                    height: rect.height,
-                    clipPath: rect
-                });
-                canvas.remove(obj);
-                canvas.remove(rect);
-                canvas.add(croppedImg);
-                canvas.renderAll();
-            }, 100);
-        }
-
-        // Rotate
-        function rotateImage() {
-            const obj = canvas.getActiveObject();
-            if (!obj) return;
-            obj.rotate(obj.angle + 90);
-            canvas.renderAll();
-        }
-
-        // Save Image
-        function saveImage() {
-            const dataURL = canvas.toDataURL({ format: 'jpeg' });
-            const link = document.createElement('a');
-            link.href = dataURL;
-            link.download = 'hktools_edited.jpg';
-            link.click();
-        }
-    </script>
+  <script src="java.js"></script>
 </body>
 </html>
